@@ -1,3 +1,9 @@
+///////////NAPO PRENDIMI//////////////////////////////////////
+var mangiate_b=new Array();
+var mangiate_n=new Array();
+setInterval(ciglia,7000);//sbatte le ciglia della faccina
+///////////NAPO PRENDIMI//////////////////////////////////////
+
 timersec=300;
 turno=0;
 cont=0; //variabile che riporta il click
@@ -8,6 +14,7 @@ document.getElementById("mosse").innerHTML="mossa numero: "+turno+"";
 document.getElementById("messaggi").innerHTML="tocca ai bianchi";
 document.getElementById("faccia").innerHTML="(• ‿ •)";
 setInterval(Timer,1000);
+
 
 function mossa(pos)
 {
@@ -241,7 +248,18 @@ function mossa(pos)
 		{
 			//se viene mangiata una pedian avversaria, la faccia si stupisce
 			if(document.getElementById(pos).innerHTML!='<img src="imm/vuota.png">')
+			{
+
+///////////NAPO PRENDIMI//////////////////////////////////////
+				//salvo la pedina mangiata in un array
+				if(colturno=='b')//se era nera
+					mangiate_n.push(document.getElementById(pos).innerHTML);
+				else	//se era bianca
+					mangiate_b.push(document.getElementById(pos).innerHTML);
+///////////NAPO PRENDIMI//////////////////////////////////////			
+				
 				document.getElementById('faccia').innerHTML="(^ ‿ ^)";
+			}
 			//se viene mangiato il re, è scacco matto, e la faccina gioisce.
 			if(document.getElementById(pos).innerHTML=='<img src="imm/re_b.png">')//vincono i neri
 			{
@@ -253,10 +271,15 @@ function mossa(pos)
 			}
 
 			document.getElementById(pos).innerHTML=primo; //assegna alla nuova casella la pedina
+
+
+			
 			document.getElementById(vecchiaPos).innerHTML="<img src='imm/vuota.png'>"; //cancella la pedina nella vecchia casella
 
-
-
+///////////NAPO PRENDIMI//////////////////////////////////////
+			controlloPedoneFinal(pos,primo);//controlla se la pedina spostata era un pedone è arrivato alla parte opposta della scacchiera		
+///////////NAPO PRENDIMI//////////////////////////////////////
+			
 			turno++;
 			timersec=300;
 			document.getElementById("mosse").innerHTML="mossa numero: "+turno;
@@ -289,9 +312,23 @@ function mossa(pos)
 					document.getElementById(i+""+j).className="marrone";
             }
         }
+
+///////////NAPO PRENDIMI//////////////////////////////////////
+		visualEaten();//visualizza le pedine mangiate		
+///////////NAPO PRENDIMI//////////////////////////////////////
+		
 	}
 	cont++;
 }
+
+///////////NAPO PRENDIMI//////////////////////////////////////
+function ciglia()
+{
+	document.getElementById("faccia").innerHTML="(- ‿ -)";
+	setTimeout(function () {document.getElementById("faccia").innerHTML="(• ‿ •)";}, 1000);	
+}
+///////////NAPO PRENDIMI//////////////////////////////////////
+
 
 function Timer()
 {
@@ -313,6 +350,37 @@ function Timer()
 	timersec--;
 }
 
+///////////NAPO PRENDIMI//////////////////////////////////////
+function visualEaten()
+{
+	document.getElementById("eaten_n").innerHTML="";
+	document.getElementById("eaten_b").innerHTML="";
+	//visualizza le pedine mangiate nere
+	for(var i=0;i<mangiate_n.length;i++)
+		document.getElementById("eaten_n").innerHTML+=mangiate_n[i];
+	//visualizza le pedine mangiate bianche
+	for(var i=0;i<mangiate_b.length;i++)
+		document.getElementById("eaten_b").innerHTML+=mangiate_b[i];
+}	
+///////////NAPO PRENDIMI//////////////////////////////////////
+///////////NAPO PRENDIMI//////////////////////////////////////
+				function controlloPedoneFinal(pos,primo)
+				{
+					torre_b="torre_b";torre_n="torre_n";cavallo_b="cavallo_b";cavallo_n="cavallo_n";alfiere_b="alfiere_b";alfiere_n="alfiere_n";//è necessario per passare i parametri alla funzione 'trasforma'
+					//controllo se un pedone bianco è arrivato alla fine
+					if(pos>=11 && pos<=18 && primo=='<img src="imm/pedone_b.png">')
+						document.getElementById("transPedone").innerHTML='<p>Sostituisci il pedone con una di queste pedine</p><img class="transs" onClick="trasforma('+pos+','+torre_b+')" src="imm/torre_b.png"><br><img class="transs" onClick="trasforma('+pos+','+cavallo_b+')" src="imm/cavallo_b.png"><br><img class="transs" onClick="trasforma('+pos+','+alfiere_b+')" src="imm/alfiere_b.png">';
+					//controllo se un pedone nero è arrivato alla fine
+					if(pos>=81 && pos<=88 && primo=='<img src="imm/pedone_n.png">')
+						document.getElementById("transPedone").innerHTML='<p>Sostituisci il pedone con una di queste pedine</p><img class="transs" onClick="trasforma('+pos+','+torre_n+')" src="imm/torre_n.png"><br><img class="transs" onClick="trasforma('+pos+','+cavallo_n+')" src="imm/cavallo_n.png"><br><img class="transs" onClick="trasforma('+pos+','+alfiere_n+')" src="imm/alfiere_n.png">';
+				}
+				function trasforma(pos,selected)
+				{
+					document.getElementById(pos).innerHTML="<img src='imm/"+selected+".png'>";//trasforma il pedone nella pedina selezionata
+					document.getElementById("transPedone").innerHTML='';//toglie il menu di selezione delle pedine per la trasformazione
+				}
+///////////NAPO PRENDIMI//////////////////////////////////////
+
 function fine(coloreVinto)
 {
 	clearInterval();
@@ -326,6 +394,5 @@ function fine(coloreVinto)
 	{
 		document.getElementById("vintoscreen").innerHTML="<p>Hanno vinto i BIANCHI!</p>";
 	}
-	//document.getElementById("stats").style.margin=" 50px auto;";
-	//document.getElementById("stats").style.position=" relative;";
+
 }
