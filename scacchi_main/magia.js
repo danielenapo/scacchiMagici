@@ -378,16 +378,16 @@ function Timer()
 function controlloArrocco(colp)
 {
 	
-	if(colp=="n" && arrocco[0]==true)
+	if(colp=="n" && arrocco[0]==true) //nero
 	{
-		if(arrocco[1]==true && document.getElementById("12").innerHTML=='<img src="imm/vuota.png">' && document.getElementById("13").innerHTML=='<img src="imm/vuota.png">'  && document.getElementById("14").innerHTML=="<img src='imm/vuota.png'>")//controllo sinistra libera
+		if(arrocco[1]==true && document.getElementById("12").innerHTML=='<img src="imm/vuota.png">' && document.getElementById("13").innerHTML=='<img src="imm/vuota.png">'  && document.getElementById("14").innerHTML=='<img src="imm/vuota.png">')//controllo sinistra libera
 			document.getElementById("13").className="selezionato"; isArrocco=true;
 		if(arrocco[2]==true && document.getElementById("16").innerHTML=='<img src="imm/vuota.png">' && document.getElementById("17").innerHTML=='<img src="imm/vuota.png">')//controllo destra libera
 			document.getElementById("17").className="selezionato"; isArrocco=true;
 	}
-	else if(colp=="b" && arrocco[3]==true)
+	else if(colp=="b" && arrocco[3]==true) //bianco
 	{
-		if(arrocco[4]==true && document.getElementById("82").innerHTML=='<img src="imm/vuota.png">' && document.getElementById("83").innerHTML=='<img src="imm/vuota.png">'  && document.getElementById("84").innerHTML=="<img src='imm/vuota.png'>")//controllo sinistra libera
+		if(arrocco[4]==true && document.getElementById("82").innerHTML=='<img src="imm/vuota.png">' && document.getElementById("83").innerHTML=='<img src="imm/vuota.png">'  && document.getElementById("84").innerHTML=='<img src="imm/vuota.png">')//controllo sinistra libera
 			document.getElementById("83").className="selezionato"; isArrocco=true;
 		if(arrocco[5]==true && document.getElementById("86").innerHTML=='<img src="imm/vuota.png">' && document.getElementById("87").innerHTML=='<img src="imm/vuota.png">')//controllo destra libera
 			document.getElementById("87").className="selezionato"; isArrocco=true;
@@ -417,6 +417,8 @@ function controlloPedoneFinal(pos,primo)
 	if(pos>=81 && pos<=88 && primo=='<img src="imm/pedone_n.png">') //se il nero è arrivato alla fine
 		document.getElementById("transPedone").innerHTML='<p>Sostituisci il pedone con una di queste pedine</p><img class="transs" onClick="trasforma('+pos+','+torre_n+')" src="imm/torre_n.png"><br><img class="transs" onClick="trasforma('+pos+','+cavallo_n+')" src="imm/cavallo_n.png"><br><img class="transs" onClick="trasforma('+pos+','+alfiere_n+')" src="imm/alfiere_n.png">';
 }
+
+/*___________ TRASFORMA IL PEDONE NELLA PEDINA SELEZIONATA _____________*/
 function trasforma(pos,selected)
 {
 	document.getElementById(pos).innerHTML="<img src='imm/"+selected+".png'>";//trasforma il pedone nella pedina selezionata
