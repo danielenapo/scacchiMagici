@@ -1,4 +1,7 @@
 /*______________________DICHIARAZIONI_____________________________*/
+mangiate_b=new Array();
+mangiate_n=new Array();
+setInterval(ciglia,5000);//sbatte le ciglia della faccina
 timersec=300;
 turno=0;
 cont=0; //variabile che riporta il click
@@ -53,13 +56,19 @@ function mossa(pos)
 		//SE LA MOSSA E' VALIDA
 		if(document.getElementById(pos).className=="selezionato"&&pos!=vecchiaPos)
 		{
-			//se viene mangiata una pedian avversaria, la faccia si stupisce
+			//se viene mangiata una pedian avversaria, la faccia si stupisce e viene salvata la pedina mangiata in un array
 			if(document.getElementById(pos).innerHTML!='<img src="imm/vuota.png">')
+			{
 				document.getElementById('faccia').innerHTML="(^ ‿ ^)";
+				if(colturno=='b')//se era nera
+					mangiate_n.push(document.getElementById(pos).innerHTML);
+				else	//se era bianca
+					mangiate_b.push(document.getElementById(pos).innerHTML);
+			}
 			//se viene mangiato il re finisce il gioco
 			if(document.getElementById(pos).innerHTML=='<img src="imm/re_b.png">')//vincono i neri			
 				fine(true);
-			if(document.getElementById(pos).innerHTML=='<img src="imm/re_n.png">')//vincono i bianchi			
+			else if(document.getElementById(pos).innerHTML=='<img src="imm/re_n.png">')//vincono i bianchi			
 				fine(false);
 			
 			/*_____________________CONTROLLO ARROCCO____________________*/
@@ -102,10 +111,11 @@ function mossa(pos)
 			document.getElementById(pos).innerHTML=primo; //assegna alla nuova casella la pedina
 			document.getElementById(vecchiaPos).innerHTML="<img src='imm/vuota.png'>"; //cancella la pedina nella vecchia casella
 			//cambiamenti finali
+			controlloPedoneFinal(pos,primo);//controlla se la pedina spostata era un pedone è arrivato alla parte opposta della scacchiera
 			turno++;
 			timersec=300;
 			document.getElementById("mosse").innerHTML="mossa numero: "+turno;
-			//indica a chi tocca il turno
+			//indica a chi tocca il turno successivo
 			if(colturno=='b')
 			{
 				document.getElementById("messaggi").innerHTML="tocca ai neri";
@@ -116,14 +126,13 @@ function mossa(pos)
 				document.getElementById("messaggi").innerHTML="tocca ai bianchi";
 				colturno='b';
 			}
-
 		}
 		//SE LA MOSSA NON E' VALIDA
 		else
 			document.getElementById("messaggi").innerHTML="mossa non valida!!!";
-
-		//deseleziona tutto
-		Deseleziona();
+		
+		Deseleziona();//deseleziona tutto
+		visualEaten();//visualizza le pedine mangiate	
 	}
 	cont++;
 }
@@ -338,6 +347,12 @@ function Deseleziona()
 	}
 }
 
+/*______________ SBATTIMENTO CIGLIA DELLA FACCIA __________________*/
+function ciglia()
+{
+	document.getElementById("faccia").innerHTML="(- ‿ -)";
+	setTimeout(function () {document.getElementById("faccia").innerHTML="(• ‿ •)";}, 1000);	
+}
 /*____________ CONTO ALLA ROVESCIA DI 5 MINUTI A TURNO ____________*/
 function Timer()
 {
@@ -379,6 +394,34 @@ function controlloArrocco(colp)
 	}
 }
 
+/*_______________ VISUALIZZA PEDINE MANGIATE _____________________*/
+function visualEaten()
+{
+	document.getElementById("eaten_n").innerHTML="";
+	document.getElementById("eaten_b").innerHTML="";
+	//visualizza le pedine mangiate nere
+	for(var i=0;i<mangiate_n.length;i++)
+		document.getElementById("eaten_n").innerHTML+=mangiate_n[i];
+	//visualizza le pedine mangiate bianche
+	for(var i=0;i<mangiate_b.length;i++)
+		document.getElementById("eaten_b").innerHTML+=mangiate_b[i];
+}	
+
+/*_____________ CONTROLLO E SELEZIONE PROMOZIONE PEDINE ______________*/
+function controlloPedoneFinal(pos,primo)
+{
+	torre_b="torre_b";torre_n="torre_n";cavallo_b="cavallo_b";cavallo_n="cavallo_n";alfiere_b="alfiere_b";alfiere_n="alfiere_n";//è necessario per passare i parametri alla funzione 'trasforma'
+	
+	if(pos>=11 && pos<=18 && primo=='<img src="imm/pedone_b.png">') //se il bianco è arrivato alla fine
+		document.getElementById("transPedone").innerHTML='<p>Sostituisci il pedone con una di queste pedine</p><img class="transs" onClick="trasforma('+pos+','+torre_b+')" src="imm/torre_b.png"><br><img class="transs" onClick="trasforma('+pos+','+cavallo_b+')" src="imm/cavallo_b.png"><br><img class="transs" onClick="trasforma('+pos+','+alfiere_b+')" src="imm/alfiere_b.png">';	
+	if(pos>=81 && pos<=88 && primo=='<img src="imm/pedone_n.png">') //se il nero è arrivato alla fine
+		document.getElementById("transPedone").innerHTML='<p>Sostituisci il pedone con una di queste pedine</p><img class="transs" onClick="trasforma('+pos+','+torre_n+')" src="imm/torre_n.png"><br><img class="transs" onClick="trasforma('+pos+','+cavallo_n+')" src="imm/cavallo_n.png"><br><img class="transs" onClick="trasforma('+pos+','+alfiere_n+')" src="imm/alfiere_n.png">';
+}
+function trasforma(pos,selected)
+{
+	document.getElementById(pos).innerHTML="<img src='imm/"+selected+".png'>";//trasforma il pedone nella pedina selezionata
+	document.getElementById("transPedone").innerHTML='';//toglie il menu di selezione delle pedine per la trasformazione
+}
 /* _____________ IN CASO DI VITTORIA __________________________*/
 function fine(coloreVinto)
 {
