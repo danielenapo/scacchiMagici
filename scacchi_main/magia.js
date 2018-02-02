@@ -7,6 +7,7 @@ mosse=0;
 colturno='b';
 //controllo possibilità arrocco[re, torreSx, torreDx; bianchi: re, torreSx, torreDx]
 arrocco=[true, true, true, true, true, true]; 
+isArrocco=false;
 document.getElementById("mosse").innerHTML="mossa numero: "+turno+"";
 document.getElementById("messaggi").innerHTML="tocca ai bianchi";
 document.getElementById("faccia").innerHTML="(• ‿ •)";
@@ -61,40 +62,46 @@ function mossa(pos)
 			if(document.getElementById(pos).innerHTML=='<img src="imm/re_n.png">')//vincono i bianchi			
 				fine(false);
 			
-			//CONTROLLO ARROCCO
-			if((pos=="17" || pos=="12" || pos=="87" || pos=="82")&& isArrocco==true ) //se è avvenuto un arrocco
+			/*_____________________CONTROLLO ARROCCO____________________*/
+			if(pos=="13" && isArrocco==true)//nero sx
 			{
-				if()
-				document.getElementById(pos)
+				document.getElementById("14").innerHTML='<img src="imm/torre_n.png">'; //assegna alla nuova casella la pedina
+				document.getElementById("11").innerHTML="<img src='imm/vuota.png'>"; //cancella la pedina nella vecchia casella
+				arrocco[0]=false;
 			}
-			
-			//se è stato mossa na pedina per l'arrocco, ma non è stato fatto
-			if(vecchiaPos=="15")
+			else if(pos=="17" && isArrocco==true)//nero dx
 			{
-				arrocco[0,1,2]=false;
+				document.getElementById("16").innerHTML='<img src="imm/torre_n.png">'; //assegna alla nuova casella la pedina
+				document.getElementById("18").innerHTML="<img src='imm/vuota.png'>"; //cancella la pedina nella vecchia casella
+				arrocco[0]=false;
 			}
-			else if(vecchiaPos=="11")
-				arrocco[1]=false;
-			
-			else if(vecchiaPos=="18")
-				arrocco[2]=false;
-			
-			else if(vecchiaPos=="85")
+			else if(pos=="83" && isArrocco==true)//bianco sx
 			{
-				arrocco[3,4,5]=false;
+				document.getElementById("84").innerHTML='<img src="imm/torre_b.png">'; //assegna alla nuova casella la pedina
+				document.getElementById("81").innerHTML="<img src='imm/vuota.png'>"; //cancella la pedina nella vecchia casella
+				arrocco[3]=false;
 			}
-			else if(vecchiaPos=="81")
-				arrocco[4]=false;
+			else if(pos=="87" && isArrocco==true)//bianco dx
+			{
+				document.getElementById("86").innerHTML='<img src="imm/torre_b.png">'; //assegna alla nuova casella la pedina
+				document.getElementById("88").innerHTML="<img src='imm/vuota.png'>"; //cancella la pedina nella vecchia casella
+				arrocco[3]=false;
+			}
+				
 			
-			else if(vecchiaPos=="88")
-				arrocco[5]=false;
 			
-			
+			//se è stato mossa una pedina per l'arrocco, ma non è stato fatto (quindi l'arrocco non è più possibile per quelle pedine)
+			var sum=["15", "11", "18", "85", "81", "88"]
+			for(var i=0; i<6; i++)
+			{
+				if(vecchiaPos==sum[i])
+					arrocco[i]=false;
+					
+			}
+			//spostamento pedine
 			document.getElementById(pos).innerHTML=primo; //assegna alla nuova casella la pedina
 			document.getElementById(vecchiaPos).innerHTML="<img src='imm/vuota.png'>"; //cancella la pedina nella vecchia casella
-
-
-
+			//cambiamenti finali
 			turno++;
 			timersec=300;
 			document.getElementById("mosse").innerHTML="mossa numero: "+turno;
@@ -263,13 +270,13 @@ function Seleziona(pimo, colp, colturno, pos)
 			//re neri e bianchi
 			case '<img src="imm/re_n.png">':
 			case '<img src="imm/re_b.png">':
+			controlloArrocco(colp);
 			var sum=[10, 1, -1, -10, 11, 9, -9, -11];
 			var i=0;
 			for(var k=0; k<8; k++)
 			{
 				for(var j=0; j<8; j++)
 				{
-					controlloArrocco(pos, colp)
 					i=sum[k];
 					if(document.getElementById(parseInt(pos+i))!=null)
 					{
@@ -352,21 +359,22 @@ function Timer()
 	timersec--;
 }
 
-
-function controlloArrocco(colp, primo)
+/*_______________ CONTROLLO POSSIBILITA' ARROCCO ___________________*/
+function controlloArrocco(colp)
 {
+	
 	if(colp=="n" && arrocco[0]==true)
 	{
-		if(arrocco[1]==true && document.getElementById("12").innerHTML=="<img src='imm/vuota.png'>" && document.getElementById("13").innerHTML=="<img src='imm/vuota.png'>")
-			document.getElementById("12").className="selezionato"; isArrocco=true;
-		if(arrocco[2]==true && document.getElementById("12").innerHTML=="<img src='imm/vuota.png'>" && document.getElementById("13").innerHTML=="<img src='imm/vuota.png'>")
+		if(arrocco[1]==true && document.getElementById("12").innerHTML=='<img src="imm/vuota.png">' && document.getElementById("13").innerHTML=='<img src="imm/vuota.png">'  && document.getElementById("14").innerHTML=="<img src='imm/vuota.png'>")//controllo sinistra libera
+			document.getElementById("13").className="selezionato"; isArrocco=true;
+		if(arrocco[2]==true && document.getElementById("16").innerHTML=='<img src="imm/vuota.png">' && document.getElementById("17").innerHTML=='<img src="imm/vuota.png">')//controllo destra libera
 			document.getElementById("17").className="selezionato"; isArrocco=true;
 	}
 	else if(colp=="b" && arrocco[3]==true)
 	{
-		if(arrocco[4]==true)
-			document.getElementById("82").className="selezionato"; isArrocco=true;
-		if(arrocco[5]==true)
+		if(arrocco[4]==true && document.getElementById("82").innerHTML=='<img src="imm/vuota.png">' && document.getElementById("83").innerHTML=='<img src="imm/vuota.png">'  && document.getElementById("84").innerHTML=="<img src='imm/vuota.png'>")//controllo sinistra libera
+			document.getElementById("83").className="selezionato"; isArrocco=true;
+		if(arrocco[5]==true && document.getElementById("86").innerHTML=='<img src="imm/vuota.png">' && document.getElementById("87").innerHTML=='<img src="imm/vuota.png">')//controllo destra libera
 			document.getElementById("87").className="selezionato"; isArrocco=true;
 	}
 }
